@@ -1,3 +1,113 @@
+/* app/globals.css */
+
+@import "tailwindcss";
+
+/* Define your custom theme values using the @theme directive */
+@theme {
+  /* Custom colors */
+  --color-purple-951: rgba(
+    79,
+    70,
+    229,
+    1
+  ); /* From rgba(79, 70, 229, 1) - using raw values for Tailwind */
+  --color-gray-950: hsla(
+    0,
+    0%,
+    100%,
+    0.7
+  ); /* From hsla(0, 0%, 100%, 0.7) - using HSL with alpha */
+  --color-gray-951: hsla(
+    0,
+    0%,
+    100%,
+    0.4
+  ); /* From hsla(0, 0%, 100%, 0.4) - using HSL with alpha */
+  --color-gray-952: #373b64; /* From #373b64 - approx HSL */
+
+  /* Custom background image */
+  --bg-gradient: url("/static/backgrounds/background.png");
+}
+
+/*
+  Custom base styles and utilities using @layer base and @apply.
+  While v4 might allow direct CSS, keeping @layer can help with layering control.
+*/
+@layer base {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    /* Apply utilities, referencing the custom background image variable */
+    background-image: var(--bg-gradient); /* Use the variable here */
+    @apply bg-cover bg-[50%] bg-repeat h-full; /* Other background utilities */
+  }
+
+  h1 {
+    font-family: var(--font-ibmplexsans);
+    @apply text-4xl font-bold text-white md:text-5xl lg:text-7xl;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Note: You have two conflicting 'p' rules. The second one will override the first. */
+  p {
+    @apply text-base font-medium; /* This rule */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  p,
+  pre {
+    margin: 0;
+  }
+
+  button {
+    /* Apply utilities, using the custom color */
+    @apply w-fit cursor-pointer rounded-lg border-0 bg-purple-951 px-6 py-4 text-lg text-white hover:bg-violet-900;
+  }
+
+  button:focus {
+    @apply outline-dotted outline-1;
+  }
+
+  p {
+    @apply m-0 text-2xl font-bold md:text-3xl; /* This rule will likely be applied */
+  }
+}
+
+/*
+  Custom component styles using @layer components and @apply.
+*/
+@layer components {
+  /* glass-morphism */
+  .glass {
+    /* Apply utilities, using custom colors */
+    @apply border border-solid border-[hsla(0,0%,100%,0.2)] bg-gray-951 backdrop-blur-[10px] hover:border hover:border-solid hover:border-white;
+    -webkit-backdrop-filter: blur(10px); /* Standard CSS */
+  }
+
+  .glass:hover {
+    /* Apply utility, using custom color */
+    @apply bg-gray-950;
+  }
+}
+
+/* Your existing root variables and media queries go here */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,30 +120,27 @@
   }
 }
 
-html,
+/* Ensure html, body styles outside @layer base are minimal if defined inside */
+/* html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-}
+} */ /* Commented out as similar styles are in @layer base */
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Ensure body color/background styles are handled */
 
-* {
+/* Ensure * styles are handled */
+/* * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
+} */ /* Commented out as similar styles are in @layer base */
 
-a {
+/* Ensure a styles are handled */
+/* a {
   color: inherit;
   text-decoration: none;
-}
+} */ /* Commented out as similar styles are in @layer base */
 
 @media (prefers-color-scheme: dark) {
   html {
