@@ -1,62 +1,71 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import React from "react";
 
-type CoffeeShop = {
-  id?: string;
-  name?: string;
-  address?: string;
+interface CoffeeShop {
+  id: string;
+  name: string;
+  address: string;
   neighborhood?: string;
-  imgUrl?: string;
+  imgUrl: string;
   websiteUrl?: string;
-  rating?: number;
+  rating: number;
   votes?: number;
-};
+}
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
-export default function CoffeeShopPage({
-  params,
-  coffeeShopData,
-}: {
-  params: { id: string };
-  coffeeShopData?: CoffeeShop;
-}) {
-  const { id } = params;
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function CoffeeShopPage({ params }: PageProps) {
+  const { id } = use(params);
+  const searchParams = useSearchParams();
   const [coffeeShop, setCoffeeShop] = useState<CoffeeShop | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(!coffeeShopData);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // If we already have data from props, use it and skip loading
-    if (coffeeShopData) {
-      setCoffeeShop(coffeeShopData);
-      setIsLoading(false);
-      return;
-    }
+    // Try to use data from URL params first
+    const name = searchParams.get("name");
+    const address = searchParams.get("address");
+    const imgUrl = searchParams.get("imgUrl");
+    const rating = searchParams.get("rating");
 
-    // Otherwise fetch the data
-    const fetchData = setTimeout(() => {
+    if (name && address && imgUrl && rating) {
+      // We have all the data we need from URL params
       setCoffeeShop({
-        id: id,
-        name: `Coffee Shop ${id}`,
-        address: "123 Main Street, City",
+        id,
+        name,
+        address,
+        imgUrl,
+        rating: parseFloat(rating),
+        // Set default values for optional fields
         neighborhood: "Downtown",
-        imgUrl:
-          "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
         websiteUrl: "https://example.com",
-        rating: 4.5,
         votes: 123,
       });
       setIsLoading(false);
-    }, 500);
-
-    return () => clearTimeout(fetchData);
-  }, [id, coffeeShopData]);
+    } else {
+      // Fall back to fetching data
+      setTimeout(() => {
+        setCoffeeShop({
+          id,
+          name: `Coffee Shop ${id}`,
+          address: "123 Main Street, City",
+          neighborhood: "Downtown",
+          imgUrl:
+            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+          websiteUrl: "https://example.com",
+          rating: 4.5,
+          votes: 123,
+        });
+        setIsLoading(false);
+      }, 500);
+    }
+  }, [id, searchParams]);
 
   if (isLoading) {
     return (
@@ -65,6 +74,7 @@ export default function CoffeeShopPage({
       </div>
     );
   }
+
   return (
     <div className="flex min-h-screen flex-col items-center p-6 md:p-14">
       <Link
@@ -78,8 +88,8 @@ export default function CoffeeShopPage({
         <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="relative w-full h-64 md:h-96">
             <Image
-              src={coffeeShop.imgUrl || "/default-image.jpg"}
-              alt={coffeeShop.name || "Coffee shop image"}
+              src={coffeeShop.imgUrl}
+              alt={coffeeShop.name}
               fill
               style={{ objectFit: "cover" }}
               priority
@@ -93,7 +103,9 @@ export default function CoffeeShopPage({
 
             <div className="mt-4 text-gray-700">
               <p className="text-lg">{coffeeShop.address}</p>
-              <p className="mt-1">{coffeeShop.neighborhood}</p>
+              {coffeeShop.neighborhood && (
+                <p className="mt-1">{coffeeShop.neighborhood}</p>
+              )}
             </div>
 
             <div className="mt-6 flex items-center">
@@ -101,8 +113,12 @@ export default function CoffeeShopPage({
                 <span className="text-yellow-500 mr-1">★</span>
                 <span className="font-medium">{coffeeShop.rating}</span>
               </div>
-              <span className="mx-2 text-gray-400">•</span>
-              <span>{coffeeShop.votes} votes</span>
+              {coffeeShop.votes && (
+                <>
+                  <span className="mx-2 text-gray-400">•</span>
+                  <span>{coffeeShop.votes} votes</span>
+                </>
+              )}
             </div>
 
             {coffeeShop.websiteUrl && (

@@ -75,7 +75,6 @@ export default function CoffeeShops({
     );
   }
 
-  // Rest of your component remains the same...
   return (
     <main className="flex min-h-screen flex-col items-center p-14">
       <h1 className="text-4xl font-bold mb-8">Local Coffee Shops</h1>
@@ -83,7 +82,15 @@ export default function CoffeeShops({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {coffeeShops.map((shop) => (
           <Link
-            href={`/coffee-shops/${shop.id}`}
+            href={{
+              pathname: `/coffee-shops/${shop.id}`,
+              query: {
+                name: shop.name,
+                address: shop.address,
+                imgUrl: shop.imgUrl,
+                rating: shop.rating,
+              },
+            }}
             key={shop.id}
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300"
           >
