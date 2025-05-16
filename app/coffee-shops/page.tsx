@@ -16,6 +16,50 @@ interface CoffeeShopsProps {
   initialCoffeeShops?: CoffeeShop[];
 }
 
+export const mockShops = [
+  {
+    id: "1",
+    name: "Brew Haven",
+    address: "123 Main Street",
+    imgUrl:
+      "https://images.unsplash.com/photo-1493857671505-72967e2e2760?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    rating: 4.8,
+    branches: [
+      {
+        id: "1",
+        name: "Branch 11",
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Coffee Culture",
+    address: "456 Oak Avenue",
+    imgUrl:
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    rating: 4.3,
+    branches: [
+      {
+        id: "1",
+        name: "Branch 12",
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "Espresso Express",
+    address: "789 Pine Street",
+    imgUrl:
+      "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+    rating: 4.6,
+    branches: [
+      {
+        id: "1",
+        name: "Branch 13",
+      },
+    ],
+  },
+];
 export default function CoffeeShops({
   initialCoffeeShops = [],
 }: CoffeeShopsProps) {
@@ -32,37 +76,15 @@ export default function CoffeeShops({
     // Only fetch if no initial data was provided
     const fetchCoffeeShops = () => {
       setTimeout(() => {
-        const mockShops = [
-          {
-            id: "1",
-            name: "Brew Haven",
-            address: "123 Main Street",
-            imgUrl:
-              "https://images.unsplash.com/photo-1493857671505-72967e2e2760?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-            rating: 4.8,
-          },
-          {
-            id: "2",
-            name: "Coffee Culture",
-            address: "456 Oak Avenue",
-            imgUrl:
-              "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-            rating: 4.3,
-          },
-          {
-            id: "3",
-            name: "Espresso Express",
-            address: "789 Pine Street",
-            imgUrl:
-              "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-            rating: 4.6,
-          },
-        ];
-
         setCoffeeShops(mockShops);
         setIsLoading(false);
       }, 800);
     };
+
+    // Example usage: fetchCoffeeShopById("1");
+    // You can call this function in a dynamic route like [..id] to fetch a specific coffee shop by its ID.
+
+    // Example usage: fetchCoffeeShopById("1");
 
     fetchCoffeeShops();
   }, [initialCoffeeShops]);
@@ -82,15 +104,7 @@ export default function CoffeeShops({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {coffeeShops.map((shop) => (
           <Link
-            href={{
-              pathname: `/coffee-shops/${shop.id}`,
-              query: {
-                name: shop.name,
-                address: shop.address,
-                imgUrl: shop.imgUrl,
-                rating: shop.rating,
-              },
-            }}
+            href={`/coffee-shops/${shop.id}/`}
             key={shop.id}
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300"
           >
