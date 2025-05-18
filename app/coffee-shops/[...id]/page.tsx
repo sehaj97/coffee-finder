@@ -2,70 +2,65 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { mockShops } from "../page";
+import { mockShops } from "@/app/mocks/cofee-shops";
 import { use } from "react";
+import CoffeeCard from "@/components/coffee-card.client";
+import BranchCard from "@/components/branch-card.server";
 
 function CoffeeShopPage({ params }: { params: Promise<{ id: string[] }> }) {
   const { id } = use(params); // Unwrapping the promise
   const coffeeShop = mockShops?.find((shop) => shop.id === id[0]) as
-    | { id: string; name: string; branches: { id: string; name: string }[] }
+    | {
+        id: string;
+        name: string;
+        address: string;
+        imgUrl: string;
+        rating: number;
+        branches: { id: string; name: string }[];
+      }
     | undefined;
-
-  const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
-
-  const branchShop =
-    coffeeShop?.branches.find((branch) => branch.id === id[1]) || null;
+  const { name, address, imgUrl, rating } = coffeeShop || {};
 
   const hasBranches = coffeeShop?.branches && coffeeShop.branches.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col items-center p-14">
-      <Link
-        href={`/`} // Could also go to /coffee-shops if needed
-        className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 m-5 py-2 px-5"
-      >
-        Home
-      </Link>
-      <h1 className="text-2xl font-bold mt-6">{coffeeShop?.name}</h1>
-      <h3>Number of branches</h3>
-      <p>{coffeeShop?.branches?.length || 0}</p>
-
-      {hasBranches && !selectedBranch && !id[1] && (
-        <button
-          onClick={() => setSelectedBranch("showBranches")}
-          className="text-gray-500 hover:underline m-5 py-2 px-5 bg-amber-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300"
-        >
-          View All Branches
-        </button>
-      )}
-
-      {id[1] && (
-        <Link
-          href={`/coffee-shops/${id[0]}`}
-          className="text-gray-500 hover:underline m-5 py-2 px-5 bg-red-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300"
-        >
-          Go Back
-        </Link>
-      )}
-
-      {selectedBranch === "showBranches" &&
-        coffeeShop?.branches?.map((branch, index) => (
+      <div className="w-full max-w-4xl backdrop-blur-md rounded-lg shadow-lg p-8">
+        {id[0] && (
           <Link
-            key={branch.id}
-            href={`/coffee-shops/${id[0]}/${branch.id}`}
-            className="text-gray-500 hover:underline m-2 py-2 px-5 bg-blue-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300 inline-block text-center"
+            href={`/`}
+            className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 mb-5 py-2 px-5 inline-block bg-blue-100 text-blue-700"
           >
-            Branch {index + 1}
+            Home
           </Link>
-        ))}
-
-      {branchShop && (
-        <div>
-          <h3>Branch Name</h3>
-          <p>{branchShop.name}</p>
-          <p>You are now on {branchShop.name} page.</p>
-        </div>
-      )}
+        )}
+        {id[1] && (
+          <Link
+            href={`/coffee-shops/${id[0]}`}
+            className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 mb-5 py-2 px-5 inline-block bg-blue-100 text-blue-700"
+          >
+            {coffeeShop?.name}
+          </Link>
+        )}
+        {id[0] && (
+          <CoffeeCard
+            name={name || "Unknown Name"}
+            address={address || "Unknown Address"}
+            rating={rating || 0}
+            imageUrl={
+              imgUrl ||
+              "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }
+          ></CoffeeCard>
+        )}
+        {hasBranches && (
+          <BranchCard
+            coffeeShop={coffeeShop}
+            hasBranches={hasBranches}
+            id={id}
+          />
+        )}
+      </div>
     </div>
   );
 }
