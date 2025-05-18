@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Card } from "@/components/card.server";
 
 interface CoffeeShop {
   id: string;
@@ -81,11 +82,6 @@ export default function CoffeeShops({
       }, 800);
     };
 
-    // Example usage: fetchCoffeeShopById("1");
-    // You can call this function in a dynamic route like [..id] to fetch a specific coffee shop by its ID.
-
-    // Example usage: fetchCoffeeShopById("1");
-
     fetchCoffeeShops();
   }, [initialCoffeeShops]);
 
@@ -103,28 +99,12 @@ export default function CoffeeShops({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {coffeeShops.map((shop) => (
-          <Link
+          <Card
             href={`/coffee-shops/${shop.id}/`}
             key={shop.id}
-            className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300"
-          >
-            <div className="relative w-full h-48">
-              <Image
-                src={shop.imgUrl}
-                alt={shop.name}
-                fill
-                style={{ objectFit: "cover" }}
-              />
-            </div>
-            <div className="p-4">
-              <h2 className="text-xl font-semibold">{shop.name}</h2>
-              <p className="text-gray-600 mt-1">{shop.address}</p>
-              <div className="mt-2 flex items-center">
-                <span className="text-yellow-500 mr-1">★</span>
-                <span>{shop.rating}</span>
-              </div>
-            </div>
-          </Link>
+            imageUrl={shop.imgUrl}
+            name={shop.name}
+          />
         ))}
       </div>
     </main>
