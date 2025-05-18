@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { mockShops } from "../page";
 import { use } from "react";
@@ -11,10 +11,12 @@ function CoffeeShopPage({ params }: { params: Promise<{ id: string[] }> }) {
     | { id: string; name: string; branches: { id: string; name: string }[] }
     | undefined;
 
-  const branchShop: { id: string; name: string } | undefined =
-    coffeeShop?.branches.find(
-      (branch: { id: string; name: string }) => branch.id === id[1]
-    );
+  const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
+
+  const branchShop =
+    coffeeShop?.branches.find((branch) => branch.id === id[1]) || null;
+
+  const hasBranches = coffeeShop?.branches && coffeeShop.branches.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col items-center p-14">
@@ -27,21 +29,42 @@ function CoffeeShopPage({ params }: { params: Promise<{ id: string[] }> }) {
       <h1 className="text-2xl font-bold mt-6">{coffeeShop?.name}</h1>
       <h3>Number of branches</h3>
       <p>{coffeeShop?.branches?.length || 0}</p>
-      {branchShop ? (
+
+      {hasBranches && !selectedBranch && !id[1] && (
+        <button
+          onClick={() => setSelectedBranch("showBranches")}
+          className="text-gray-500 hover:underline m-5 py-2 px-5 bg-amber-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300"
+        >
+          View All Branches
+        </button>
+      )}
+
+      {id[1] && (
+        <Link
+          href={`/coffee-shops/${id[0]}`}
+          className="text-gray-500 hover:underline m-5 py-2 px-5 bg-red-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300"
+        >
+          Go Back
+        </Link>
+      )}
+
+      {selectedBranch === "showBranches" &&
+        coffeeShop?.branches?.map((branch, index) => (
+          <Link
+            key={branch.id}
+            href={`/coffee-shops/${id[0]}/${branch.id}`}
+            className="text-gray-500 hover:underline m-2 py-2 px-5 bg-blue-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300 inline-block text-center"
+          >
+            Branch {index + 1}
+          </Link>
+        ))}
+
+      {branchShop && (
         <div>
           <h3>Branch Name</h3>
           <p>{branchShop.name}</p>
+          <p>You are now on {branchShop.name} page.</p>
         </div>
-      ) : (
-        coffeeShop?.branches?.map((branch: { id: string; name: string }) => (
-          <Link
-            key={branch.id}
-            href={`/coffee-shops/${coffeeShop?.id}/${branch.id}`}
-            className="text-gray-500 hover:underline m-5 py-2 px-5 bg-amber-100 border rounded-lg overflow-hidden hover:shadow-2xl shadow-blue-900 transition duration-300"
-          >
-            Click to view branch
-          </Link>
-        ))
       )}
     </div>
   );
