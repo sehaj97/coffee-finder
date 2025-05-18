@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { mockShops } from "@/app/mocks/cofee-shops";
 import { use } from "react";
-import CoffeeCard from "@/components/coffee-card.client";
+import CoffeeCard from "@/components/coffee-card.server";
 import BranchCard from "@/components/branch-card.server";
 
 function CoffeeShopPage({ params }: { params: Promise<{ id: string[] }> }) {
