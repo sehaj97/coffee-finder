@@ -1,6 +1,6 @@
 import Link from "next/link";
-import DetailedInfoCard from "@/components/detailed-info-card.server";
-import BranchCard from "@/components/branch-card.server";
+import DetailedInfoCard from "@/components/server/detailed-info-card.server";
+import BranchCard from "@/components/server/branch-card.server";
 import { getData } from "@/app/page";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
 

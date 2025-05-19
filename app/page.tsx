@@ -1,4 +1,4 @@
-import Banner from "@/components/top-banner.client";
+import Banner from "@/components/client/top-banner.client";
 import { fetchCoffeeStores } from "@/libs/coffee-stores-api";
 import CoffeeShopsServer from "./coffee-stores/page";
 

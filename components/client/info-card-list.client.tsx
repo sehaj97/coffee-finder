@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/info-card.server";
+import { Card } from "@/components/server/info-card.server";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
 
 type CoffeeShop = {

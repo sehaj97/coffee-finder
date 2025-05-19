@@ -1,4 +1,4 @@
-import InfoCardList from "@/components/info-card-list.client";
+import InfoCardList from "@/components/client/info-card-list.client";
 import { CoffeeShopsProps } from "../page"; // this is correct if used from app/page.tsx
 
 export default function CoffeeShopsServer({
