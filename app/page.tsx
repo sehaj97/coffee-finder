@@ -1,28 +1,36 @@
-import Banner from "@/components/banner.client";
-import Link from "next/link";
-import Image from "next/image";
-import CoffeeShops from "./coffee-shops/page";
+import Banner from "@/components/top-banner.client";
+import { fetchCoffeeStores } from "@/libs/coffee-stores-api";
+import CoffeeShopsServer from "./coffee-stores/page";
 
-// Define the CoffeeShop interface
-interface CoffeeShop {
+export type CoffeeShop = {
   id: string;
   name: string;
   address: string;
   imgUrl: string;
   rating: number;
+  branches: { id: string; name: string }[];
+};
+
+export interface CoffeeShopsProps {
+  coffeeShopData: CoffeeShop[];
 }
 
-export default function Home() {
-  // Initial empty coffee shops array
-  const coffeeShops: CoffeeShop[] = [];
+export async function getData() {
+  return await fetchCoffeeStores();
+}
 
+export default async function Home() {
+  // Initial empty coffee shops array
+  // const [coffeeShops, setCoffeeShops] = useState<CoffeeShop[]>([]);
+
+  const coffeeShopsApi = await getData();
   return (
-    <main className="flex min-h-screen flex-col items-center p-14">
+    <main className="flex min-h-screen flex-col items-center justify-center p-14">
       <Banner buttonText="View Your Local Coffee Shops" />
 
       <section className="w-full max-w-6xl mt-16">
         <div className="w-full max-w-6xl">
-          <CoffeeShops />
+          <CoffeeShopsServer coffeeShopData={coffeeShopsApi} />
         </div>
       </section>
     </main>

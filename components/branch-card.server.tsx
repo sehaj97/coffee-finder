@@ -33,7 +33,7 @@ const BranchCard: React.FC<BranchCardProps> = ({
           {coffeeShop.branches.map((branch, index) => (
             <Link
               key={branch.id}
-              href={`/coffee-shops/${coffeeShop.id}/${branch.id}`}
+              href={`/coffee-stores/${coffeeShop.id}/${branch.id}`}
               className={`text-gray-700 hover:underline py-2 px-5 bg-blue-100 border rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center ${
                 id[1] === branch.id ? "bg-blue-200" : ""
               }`}

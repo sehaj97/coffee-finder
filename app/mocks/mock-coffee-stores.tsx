@@ -7,9 +7,9 @@ export const mockShops = [
       "https://images.unsplash.com/photo-1493857671505-72967e2e2760?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
     rating: 4.8,
     branches: [
-      { id: "1", name: "Branch 11" },
-      { id: "2", name: "Branch 12" },
-      { id: "3", name: "Branch 13" },
+      { id: "1", name: "Branch 21" },
+      { id: "2", name: "Branch 22" },
+      { id: "3", name: "Branch 23" },
     ],
   },
   {
