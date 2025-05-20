@@ -1,8 +1,13 @@
 import InfoCardList from "@/components/client/info-card-list.client";
-import { CoffeeShopsProps } from "../page"; // this is correct if used from app/page.tsx
+import { CoffeeShopsProps } from "@/types/coffee-store-types";
+import { mockShops } from "../mocks/mock-coffee-stores";
+import { getData } from "../page";
 
-export default function CoffeeShopsServer({
-  coffeeShopData,
+export default async function CoffeeShopsServer({
+  coffeeStores = [],
 }: CoffeeShopsProps) {
-  return <InfoCardList coffeeShopData={coffeeShopData} />;
+  if (!coffeeStores.length) {
+    coffeeStores = (await getData()) || mockShops;
+  }
+  return <InfoCardList coffeeShopData={coffeeStores} />;
 }

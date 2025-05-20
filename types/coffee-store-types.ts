@@ -1,0 +1,13 @@
+export type CoffeeShopType = {
+  id: string;
+  name: string;
+  address: string;
+  imgUrl: string;
+  rating: number;
+  votes?: number;
+  branches: { id: string; name: string }[];
+};
+
+export interface CoffeeShopsProps {
+  coffeeStores: CoffeeShopType[];
+}
