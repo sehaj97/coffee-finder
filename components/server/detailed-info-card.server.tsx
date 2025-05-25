@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface CoffeeCardProps {
   name: string;
@@ -33,7 +34,9 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   return (
     <div className="flex flex-col md:flex-row max-w-full gap-4 md:max-w-3xl items-center">
       <div className="flex-1 aspect-square">
-        <img
+        <Image
+          width={300}
+          height={300}
           src={imageUrl}
           alt={`${name} image`}
           className="w-full h-full object-cover rounded-lg shadow-lg"

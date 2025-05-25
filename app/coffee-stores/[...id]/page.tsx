@@ -1,31 +1,35 @@
 import Link from "next/link";
 import DetailedInfoCard from "@/components/server/detailed-info-card.server";
 import BranchCard from "@/components/server/branch-card.server";
-import { getData } from "@/app/page";
-import { mockShops } from "@/app/mocks/mock-coffee-stores";
+import { getData, getDataId } from "@/app/page";
 
-type CoffeeShop = {
-  id: string;
-  name: string;
-  address: string;
-  imgUrl: string;
-  rating: number;
-  branches: { id: string; name: string }[];
+export async function generateStaticParams(): Promise<{ id: string[] }[]> {
+  const coffeeStores = await getData();
+
+  return coffeeStores.map((coffeeStore: { id: string }) => ({
+    id: [coffeeStore.id], // note: this must be an array for [...id]
+  }));
+}
+
+// Define the Props type
+export type PageProps = {
+  params: {
+    id: string[];
+  };
 };
 
-export default async function CoffeeShopPage({
-  params,
-}: {
-  params: { id: string[] };
-}) {
-  const coffeeStores = (await getData()) || mockShops;
-
+export default async function CoffeeShopPage({ params }: PageProps) {
   const id = params.id;
-  const coffeeStore = coffeeStores.find(
-    (shop: CoffeeShop) => shop.id === id?.[0]
-  );
+  let coffeeStore = null;
+
+  try {
+    coffeeStore = await getDataId(id?.[0]);
+  } catch (error) {
+    console.error("Error fetching coffee store data:", error);
+    coffeeStore = [];
+  }
   console.log("Coffee Store:", coffeeStore);
-  const { name, address, imgUrl, rating } = coffeeStore || {};
+  const { name, address, imgUrl, rating } = coffeeStore[0] || {};
   const hasBranches = coffeeStore?.branches?.length > 0;
 
   return (

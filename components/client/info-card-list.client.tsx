@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/server/info-card.server";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
-import { getData } from "@/app/page";
 
 type CoffeeShop = {
   id: string;
@@ -30,7 +29,6 @@ export default function InfoCardList({
   const [isLoading, setIsLoading] = useState(coffeeShopData.length === 0);
 
   useEffect(() => {
-    console.log("Coffee Shop Data:", coffeeShopData);
     if (coffeeShopData.length > 0) return;
 
     const fetchCoffeeShops = () => {
