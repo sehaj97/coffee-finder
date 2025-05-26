@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 
 import "./globals.css";
+import { unsplash } from "@/libs/usplash-api";
 
 const ibmSans = IBM_Plex_Sans({
   display: "swap",
@@ -20,7 +21,32 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const coffeeShops = await fetchCoffeeStores();
+  // const coffeeShops = await fetchCoffeeStores(); // Fetch coffee shops data from the API globally
+
+  // TO GET UNSPLASH IMAGES USING UNSPLASH API
+  // Uncomment the following code to fetch images from Unsplash API. Not ussing it currently to avoid rate limits and API key exposure in public repositories.
+  // did setup the unsplash api key in .env.local file as NEXT_UNSPLASH_ACCESS_KEY
+  // also added the unsplash api in libs/usplash-api.ts file so that it can be used in other components or pages like in layout.tsx:
+
+  // try {
+  //   console.log("Access key exists:", !!process.env.NEXT_UNSPLASH_ACCESS_KEY);
+  //   // Direct call to Unsplash API
+  //   const response = await unsplash.search.getPhotos({
+  //     query: "coffee shop",
+  //     page: 1,
+  //     perPage: 10,
+  //     color: "green",
+  //     orientation: "portrait",
+  //   });
+
+  //   console.log(
+  //     "Fetched image for URLs:",
+  //     response.response?.results.map((result) => result.urls.regular)
+  //   );
+  // } catch (error) {
+  //   console.error("Error fetching Unsplash image:", error);
+  //   // Will fall back to provided imageUrl or placeholder
+  // }
   return (
     <html lang="en">
       <body className={`${ibmSans.className}`}>{children}</body>

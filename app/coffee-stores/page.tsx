@@ -1,13 +1,9 @@
 import InfoCardList from "@/components/client/info-card-list.client";
-import { CoffeeShopsProps } from "@/types/coffee-store-types";
 import { mockShops } from "../mocks/mock-coffee-stores";
-import { getData } from "../page";
+import { fetchCoffeeStores } from "@/libs/coffee-stores-api";
 
-export default async function CoffeeShopsServer({
-  coffeeStores = [],
-}: CoffeeShopsProps) {
-  if (!coffeeStores.length) {
-    coffeeStores = (await getData()) || mockShops;
-  }
+export default async function CoffeeShopsServer() {
+  const coffeeStores = (await fetchCoffeeStores()) || mockShops;
+
   return <InfoCardList coffeeShopData={coffeeStores} />;
 }

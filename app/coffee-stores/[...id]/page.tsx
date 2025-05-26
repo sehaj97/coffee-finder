@@ -1,29 +1,31 @@
 import Link from "next/link";
 import DetailedInfoCard from "@/components/server/detailed-info-card.server";
 import BranchCard from "@/components/server/branch-card.server";
-import { getData, getDataId } from "@/app/page";
+import { fetchCoffeeStore, fetchCoffeeStores } from "@/libs/coffee-stores-api";
 
 export async function generateStaticParams(): Promise<{ id: string[] }[]> {
-  const coffeeStores = await getData();
+  const coffeeStores = await fetchCoffeeStores();
 
   return coffeeStores.map((coffeeStore: { id: string }) => ({
     id: [coffeeStore.id], // note: this must be an array for [...id]
   }));
 }
 
-// Define the Props type
+// Updated Props type to reflect that params is a Promise
 export type PageProps = {
-  params: {
+  params: Promise<{
     id: string[];
-  };
+  }>;
 };
 
 export default async function CoffeeShopPage({ params }: PageProps) {
-  const id = params.id;
+  // Await the params Promise
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
   let coffeeStore = null;
 
   try {
-    coffeeStore = await getDataId(id?.[0]);
+    coffeeStore = await fetchCoffeeStore(id?.[0]);
   } catch (error) {
     console.error("Error fetching coffee store data:", error);
     coffeeStore = [];
