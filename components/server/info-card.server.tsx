@@ -21,7 +21,7 @@ export const Card = ({ name, imageUrl, href }: CardProps) => {
         <div className="flex justify-center items-center">
           <Image
             className="max-h-[200px] min-h-[200px] rounded-lg shadow-lg"
-            src={imageUrl || "/placeholder.png"}
+            src={imageUrl || ""}
             width={260}
             height={160}
             alt={name}

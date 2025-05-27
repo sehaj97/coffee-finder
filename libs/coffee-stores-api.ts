@@ -4,6 +4,7 @@ import { MapboxType } from "../types/coffee-store-types";
 
 export const transformMapData = (item: any, index: number) => {
   return {
+    index: index,
     id: item.properties?.mapbox_id || index,
     name: item?.properties?.name || "Coffee Shop Not Found",
     address: item?.properties?.address || "Unknown Address",

@@ -4,32 +4,22 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/server/info-card.server";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
+import { setUnsplashImages } from "@/libs/usplash-api";
+import { CoffeeShopsProps, CoffeeShopType } from "@/types/coffee-store-types";
 
-type CoffeeShop = {
-  id: string;
-  name: string;
-  address: string;
-  imgUrl: string;
-  rating: number;
-  branches: { id: string; name: string }[];
-};
-
-type CoffeeShopsProps = {
-  coffeeShopData?: CoffeeShop[];
-};
-
-export default function InfoCardList({
-  coffeeShopData = [],
-}: CoffeeShopsProps) {
-  if (coffeeShopData.length === 0) {
+export default function InfoCardList({ coffeeStores = [] }: CoffeeShopsProps) {
+  if (coffeeStores.length === 0) {
     // const data = await getData();
-    coffeeShopData = mockShops;
+    coffeeStores = mockShops;
   }
-  const [coffeeShops, setCoffeeShops] = useState<CoffeeShop[]>(coffeeShopData);
-  const [isLoading, setIsLoading] = useState(coffeeShopData.length === 0);
+  const [coffeeShops, setCoffeeShops] =
+    useState<CoffeeShopType[]>(coffeeStores);
+  const [isLoading, setIsLoading] = useState(coffeeStores.length === 0);
+
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
-    if (coffeeShopData.length > 0) return;
+    if (coffeeStores.length > 0) return;
 
     const fetchCoffeeShops = () => {
       setTimeout(() => {
@@ -40,8 +30,18 @@ export default function InfoCardList({
     };
 
     fetchCoffeeShops();
-  }, [coffeeShopData]);
+  }, [coffeeStores]);
 
+  useEffect(() => {
+    const imagesStr = sessionStorage.getItem("unsplashImages");
+    if (imagesStr) {
+      setImages(JSON.parse(imagesStr));
+      console.log("Images loaded from sessionStorage:", JSON.parse(imagesStr));
+    } else {
+      setUnsplashImages();
+      setImages([]);
+    }
+  }, []);
   if (isLoading) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center p-14">
@@ -59,7 +59,13 @@ export default function InfoCardList({
           <Card
             href={`/coffee-stores/${shop?.id}/`}
             key={shop?.id}
-            imageUrl={shop?.imgUrl}
+            imageUrl={
+              typeof shop?.index === "number"
+                ? images[shop.index]
+                : typeof shop?.id === "number"
+                ? images[shop.id]
+                : "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }
             name={shop?.name}
           />
         ))}

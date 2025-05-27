@@ -1,5 +1,6 @@
 export type CoffeeShopType = {
   id: string;
+  index?: number;
   name: string;
   address: string;
   imgUrl: string;

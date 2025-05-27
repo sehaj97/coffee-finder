@@ -33,7 +33,6 @@ export default async function CoffeeShopPage({ params }: PageProps) {
   console.log("Coffee Store:", coffeeStore);
   const { name, address, imgUrl, rating } = coffeeStore[0] || {};
   const hasBranches = coffeeStore?.branches?.length > 0;
-
   return (
     <div className="flex min-h-screen flex-col items-center p-14">
       <div className="w-full max-w-4xl backdrop-blur-md rounded-lg shadow-lg p-8">
