@@ -6,6 +6,5 @@ import { useEffect } from "react";
 
 export default async function CoffeeShopsServer() {
   const coffeeStores = (await fetchCoffeeStores()) || mockShops;
-
   return <InfoCardList coffeeStores={coffeeStores} />;
 }
