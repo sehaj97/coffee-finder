@@ -1,6 +1,17 @@
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
-import { CoffeeShopType, MapboxTypeArray } from "@/types/coffee-store-types";
-import { MapboxType } from "../types/coffee-store-types";
+import { setUnsplashImages } from "./usplash-api";
+const getUnsplashImageUrl = (index: number) => {
+  let imgUrl =
+    "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  if (typeof window !== "undefined" && typeof sessionStorage !== "undefined") {
+    const images = sessionStorage.getItem("unsplashImages");
+    if (images) {
+      const parsedImages = JSON.parse(images);
+      imgUrl = parsedImages[index] || imgUrl;
+    }
+  }
+  return imgUrl;
+};
 
 export const transformMapData = (item: any, index: number) => {
   return {
@@ -8,8 +19,7 @@ export const transformMapData = (item: any, index: number) => {
     id: item.properties?.mapbox_id || index,
     name: item?.properties?.name || "Coffee Shop Not Found",
     address: item?.properties?.address || "Unknown Address",
-    imgUrl:
-      "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imgUrl: getUnsplashImageUrl(index),
     rating: 0,
     branches: [],
   };
@@ -18,6 +28,7 @@ export const transformMapData = (item: any, index: number) => {
 export async function fetchCoffeeStores() {
   // fetch mapbox api
   try {
+    // setUnsplashImages();
     const response = await fetch(
       `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=6&proximity=-79.3789680885594%2C43.653833032607096&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
     );
@@ -35,7 +46,7 @@ export async function fetchCoffeeStores() {
   }
 }
 
-export async function fetchCoffeeStore(id: string) {
+export async function fetchCoffeeStore(id: string, imgUrl?: string) {
   // fetch mapbox api
   try {
     const response = await fetch(

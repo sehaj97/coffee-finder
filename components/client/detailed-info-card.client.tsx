@@ -1,11 +1,14 @@
-import React from "react";
+"use client";
+import React, { use } from "react";
 import Image from "next/image";
+import { CoffeeShopType } from "@/types/coffee-store-types";
 
 interface CoffeeCardProps {
   name: string;
   address: string;
   rating: number;
   imageUrl: string;
+  id: string;
 }
 
 const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
@@ -13,7 +16,23 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   address,
   rating,
   imageUrl,
+  id,
 }) => {
+  if (typeof window !== "undefined") {
+    const unsplashImages = JSON.parse(
+      sessionStorage.getItem("unsplashImages") || "[]"
+    );
+    const coffeeStoresSession = JSON.parse(
+      sessionStorage.getItem("coffeeStores") || "[]"
+    );
+    const store = coffeeStoresSession.find(
+      (store: CoffeeShopType) => store.id === id
+    );
+
+    console.log("Store:", store);
+    const imgUrl = unsplashImages[store?.index || 0] || null;
+    imageUrl = imgUrl;
+  }
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {

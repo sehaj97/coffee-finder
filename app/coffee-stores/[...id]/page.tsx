@@ -1,7 +1,8 @@
 import Link from "next/link";
-import DetailedInfoCard from "@/components/server/detailed-info-card.server";
+import DetailedInfoCard from "@/components/client/detailed-info-card.client";
 import BranchCard from "@/components/server/branch-card.server";
 import { fetchCoffeeStore, fetchCoffeeStores } from "@/libs/coffee-stores-api";
+import { CoffeeShopType } from "@/types/coffee-store-types";
 
 export async function generateStaticParams(): Promise<{ id: string[] }[]> {
   const coffeeStores = await fetchCoffeeStores();
@@ -24,14 +25,16 @@ export default async function CoffeeShopPage({ params }: PageProps) {
   const id = resolvedParams.id;
   let coffeeStore = null;
 
+  let imgUrl =
+    "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
   try {
-    coffeeStore = await fetchCoffeeStore(id?.[0]);
+    // Try to get the image URL from session storage based on the matching id index
+    coffeeStore = await fetchCoffeeStore(id?.[0], imgUrl);
   } catch (error) {
     console.error("Error fetching coffee store data:", error);
     coffeeStore = [];
   }
-  console.log("Coffee Store:", coffeeStore);
-  const { name, address, imgUrl, rating } = coffeeStore[0] || {};
+  const { name, address, rating } = coffeeStore[0] || {};
   const hasBranches = coffeeStore?.branches?.length > 0;
   return (
     <div className="flex min-h-screen flex-col items-center p-14">
@@ -61,6 +64,7 @@ export default async function CoffeeShopPage({ params }: PageProps) {
               imgUrl ||
               "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             }
+            id={id[0]}
           />
         )}
         {hasBranches && (
