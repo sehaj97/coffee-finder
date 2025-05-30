@@ -51,6 +51,7 @@ export default function CoffeeStoresHomePage() {
         <InfoCardList
           location={currentLocation}
           headingText="Your Local Coffee Shops"
+          limit={10}
         />
       )}
       <InfoCardList

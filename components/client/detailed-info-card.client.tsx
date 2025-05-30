@@ -1,8 +1,7 @@
 "use client";
-import React, { use } from "react";
 import Image from "next/image";
-import { CoffeeShopType } from "@/types/coffee-store-types";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface CoffeeCardProps {
   name: string;
@@ -16,25 +15,23 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   name,
   address,
   rating,
-  imageUrl,
-  id,
+  imageUrl: defaultImageUrl,
 }) => {
-  // Extract the index from the URL query parameter
+  const [imageUrl, setImageUrl] = useState(defaultImageUrl);
   const searchParams = useSearchParams();
-  const index = searchParams.get("index");
-  if (typeof window !== "undefined") {
+
+  useEffect(() => {
+    // Only run on client side
+    const index = searchParams.get("index");
     const unsplashImages = JSON.parse(
       sessionStorage.getItem("unsplashImages") || "[]"
     );
-    const coffeeStoresSession = JSON.parse(
-      sessionStorage.getItem("coffeeStores") || "[]"
-    );
-    const store = coffeeStoresSession.find(
-      (store: CoffeeShopType) => store.id === id
-    );
     const imgUrl = unsplashImages[index || 0] || null;
-    imageUrl = imgUrl;
-  }
+    if (imgUrl) {
+      setImageUrl(imgUrl);
+    }
+  }, [searchParams]);
+
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {

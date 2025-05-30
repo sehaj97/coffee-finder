@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 
 import "./globals.css";
-import { unsplash } from "@/libs/usplash-api";
 
 const ibmSans = IBM_Plex_Sans({
   display: "swap",

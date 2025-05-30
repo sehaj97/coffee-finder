@@ -1,5 +1,4 @@
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
-import { setUnsplashImages } from "./usplash-api";
 const getUnsplashImageUrl = (index: number) => {
   let imgUrl =
     "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -25,12 +24,16 @@ export const transformMapData = (item: any, index: number) => {
   };
 };
 
-export async function fetchCoffeeStores(longitude: number, latitude: number) {
+export async function fetchCoffeeStores(
+  longitude: number,
+  latitude: number,
+  limit: number = 6
+) {
   // fetch mapbox api
   try {
     // setUnsplashImages();
     const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=6&proximity=${longitude}%2C${latitude}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
+      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=${limit}&proximity=${longitude}%2C${latitude}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
     );
     const data = await response.json();
     const formattedData = data.features.map((feature: any, index: number) =>

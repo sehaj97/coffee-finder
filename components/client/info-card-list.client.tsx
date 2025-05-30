@@ -3,22 +3,46 @@ import { Card } from "@/components/server/info-card.server";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
 import { setUnsplashImages } from "@/libs/usplash-api";
 import { CoffeeShopType } from "@/types/coffee-store-types";
-import { fetchCoffeeStores } from "@/libs/coffee-stores-api";
 
 type InfoCardListProps = {
   headingText?: string;
   location: { latitude: number | null; longitude: number | null };
+  limit?: number;
 };
 
 export default function InfoCardList({
   headingText = "Coffee Stores",
   location,
+  limit = 6,
 }: InfoCardListProps) {
   const [coffeeShops, setCoffeeShops] = useState<CoffeeShopType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
+    const coffeeStoresByLocationKey = async (
+      latitude: number,
+      longitude: number,
+      limit: number
+    ) => {
+      try {
+        const response = await fetch(
+          `/api/getCoffeeStores/getByLocation?longitude=${longitude}&latitude=${latitude}&limit=${limit}`
+        );
+        if (!response.ok) {
+          return mockShops;
+        }
+        const fetchedShops = await response.json();
+        return fetchedShops || mockShops;
+      } catch (error) {
+        console.error(
+          "Error fetching coffee stores by location, returning mock data",
+          error
+        );
+        return mockShops;
+      }
+    };
+
     const loadCoffeeShops = async () => {
       const { latitude, longitude } = location;
       if (!latitude || !longitude) return;
@@ -30,7 +54,8 @@ export default function InfoCardList({
         setCoffeeShops(JSON.parse(cachedShops));
       } else {
         const fetchedShops =
-          (await fetchCoffeeStores(longitude, latitude)) || mockShops;
+          (await coffeeStoresByLocationKey(latitude, longitude, limit)) ||
+          mockShops;
         setCoffeeShops(fetchedShops);
         sessionStorage.setItem(locationKey, JSON.stringify(fetchedShops));
       }
@@ -49,7 +74,7 @@ export default function InfoCardList({
 
     loadCoffeeShops();
     loadUnsplashImages();
-  }, [location]);
+  }, [location, limit]);
 
   const getImageUrl = (shop: CoffeeShopType) => {
     if (typeof shop.index === "number" && images[shop.index]) {
