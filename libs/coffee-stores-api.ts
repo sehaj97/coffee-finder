@@ -46,7 +46,7 @@ export async function fetchCoffeeStores(longitude: number, latitude: number) {
   }
 }
 
-export async function fetchCoffeeStore(id: string, imgUrl?: string) {
+export async function fetchCoffeeStore(id: string) {
   // fetch mapbox api
   try {
     const response = await fetch(
