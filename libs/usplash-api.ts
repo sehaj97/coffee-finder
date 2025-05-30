@@ -12,7 +12,10 @@ export const setUnsplashImages = async (): Promise<void> => {
   // Fetch a random image from Unsplash API
   let images: string[] = [];
   try {
-    console.log("Access key exists:", !!process.env.NEXT_UNSPLASH_ACCESS_KEY);
+    console.log(
+      "Access key exists:",
+      !!process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY
+    );
     // Direct call to Unsplash API
     const response = await unsplash.search.getPhotos({
       query: "coffee shop",

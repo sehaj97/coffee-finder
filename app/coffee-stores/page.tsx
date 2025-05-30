@@ -1,4 +1,4 @@
-import CoffeePageParent from "@/components/client/coffee-stores-parent.client";
-export default function CoffeeShopsServer() {
-  return <CoffeePageParent />;
+import CoffeeStoresHomePage from "@/components/client/coffee-stores-homepage.client";
+export default function CoffeeStoresPage() {
+  return <CoffeeStoresHomePage />;
 }

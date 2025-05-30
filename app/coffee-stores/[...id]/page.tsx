@@ -21,7 +21,7 @@ export type PageProps = {
   }>;
 };
 
-export default async function CoffeeShopPage({ params }: PageProps) {
+export default async function CoffeeStorePage({ params }: PageProps) {
   // Await the params Promise
   const resolvedParams = await params;
   const id = resolvedParams.id;
