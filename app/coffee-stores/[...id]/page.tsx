@@ -2,11 +2,13 @@ import Link from "next/link";
 import DetailedInfoCard from "@/components/client/detailed-info-card.client";
 import BranchCard from "@/components/server/branch-card.server";
 import { fetchCoffeeStore, fetchCoffeeStores } from "@/libs/coffee-stores-api";
-import { CoffeeShopType } from "@/types/coffee-store-types";
+import CoffeeHomeLink from "@/components/client/coffee-link.client";
 
 export async function generateStaticParams(): Promise<{ id: string[] }[]> {
-  const coffeeStores = await fetchCoffeeStores();
-
+  // Provide default longitude and latitude values (e.g., 0, 0) or replace with actual values as needed
+  const coffeeStores = await fetchCoffeeStores(-73.990593, 40.740121);
+  // Optionally, add tracking here
+  // Example: useLocationtracking("generateStaticParams", coffeeStores.length);
   return coffeeStores.map((coffeeStore: { id: string }) => ({
     id: [coffeeStore.id], // note: this must be an array for [...id]
   }));
@@ -39,14 +41,12 @@ export default async function CoffeeShopPage({ params }: PageProps) {
   return (
     <div className="flex min-h-screen flex-col items-center p-14">
       <div className="w-full max-w-4xl backdrop-blur-md rounded-lg shadow-lg p-8">
-        {id?.[0] && (
-          <Link
-            href={`/`}
-            className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 mb-5 py-2 px-5 inline-block bg-blue-100 text-blue-700"
-          >
-            Home
-          </Link>
-        )}
+        {/* 
+          Navigating to `/` will reset client-side state.
+          To persist state, lift it up to a context or global store (e.g., React Context, Redux, Zustand).
+          The Link below is correct for navigation, but state will reset unless managed globally.
+        */}
+        {id?.[0] && <CoffeeHomeLink />}
         {id?.[1] && (
           <Link
             href={`/coffee-stores/${id[0]}`}

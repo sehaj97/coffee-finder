@@ -25,12 +25,12 @@ export const transformMapData = (item: any, index: number) => {
   };
 };
 
-export async function fetchCoffeeStores() {
+export async function fetchCoffeeStores(longitude: number, latitude: number) {
   // fetch mapbox api
   try {
     // setUnsplashImages();
     const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=6&proximity=-79.3789680885594%2C43.653833032607096&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
+      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=6&proximity=${longitude}%2C${latitude}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
     );
     const data = await response.json();
     const formattedData = data.features.map((feature: any, index: number) =>

@@ -2,6 +2,7 @@
 import React, { use } from "react";
 import Image from "next/image";
 import { CoffeeShopType } from "@/types/coffee-store-types";
+import { useSearchParams } from "next/navigation";
 
 interface CoffeeCardProps {
   name: string;
@@ -18,6 +19,9 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   imageUrl,
   id,
 }) => {
+  // Extract the index from the URL query parameter
+  const searchParams = useSearchParams();
+  const index = searchParams.get("index");
   if (typeof window !== "undefined") {
     const unsplashImages = JSON.parse(
       sessionStorage.getItem("unsplashImages") || "[]"
@@ -28,9 +32,7 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
     const store = coffeeStoresSession.find(
       (store: CoffeeShopType) => store.id === id
     );
-
-    console.log("Store:", store);
-    const imgUrl = unsplashImages[store?.index || 0] || null;
+    const imgUrl = unsplashImages[index || 0] || null;
     imageUrl = imgUrl;
   }
   const renderStars = (rating: number) => {

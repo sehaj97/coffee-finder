@@ -1,10 +1,12 @@
-"use client";
-
 import Image from "next/image";
-const handleOnClick = () => {
-  console.log("Button Clicked");
-};
-const Banner = ({ buttonText }: { buttonText: string }) => {
+import { MouseEventHandler } from "react";
+const Banner = ({
+  buttonText,
+  handleClick,
+}: {
+  buttonText: string;
+  handleClick: MouseEventHandler<HTMLButtonElement> | undefined;
+}) => {
   return (
     <section className="mb-12 grid lg:mb-24 lg:grid-cols-2 mx-0 lg:mx-[300px]">
       <div className="flex justify-center items-center">
@@ -18,7 +20,7 @@ const Banner = ({ buttonText }: { buttonText: string }) => {
           </p>
 
           <div className="mt-12">
-            <button onClick={() => handleOnClick}>{buttonText}</button>
+            <button onClick={handleClick}>{buttonText}</button>
           </div>
         </div>
         <div className="absolute top-2 z-10 md:top-0 md:mt-12 md:pl-10 md:pt-0 lg:right-[200px] lg:flex lg:pl-20">
