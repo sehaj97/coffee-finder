@@ -19,13 +19,15 @@ export const Card = ({ name, imageUrl, href }: CardProps) => {
           </h2>
         </div>
         <div className="flex justify-center items-center">
-          <Image
-            className="max-h-[200px] min-h-[200px] rounded-lg shadow-lg"
-            src={imageUrl || ""}
-            width={260}
-            height={160}
-            alt={name}
-          />
+          {imageUrl && (
+            <Image
+              className="max-h-[200px] min-h-[200px] rounded-lg shadow-lg"
+              src={imageUrl}
+              width={260}
+              height={160}
+              alt={name}
+            />
+          )}
         </div>
       </div>
     </Link>

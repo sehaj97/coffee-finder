@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Card } from "@/components/server/info-card.server";
 import { mockShops } from "@/app/mocks/mock-coffee-stores";
 import { setUnsplashImages } from "@/libs/usplash-api";
@@ -62,12 +62,12 @@ export default function InfoCardList({
       setIsLoading(false);
     };
 
-    const loadUnsplashImages = () => {
+    const loadUnsplashImages = async () => {
       const cachedImages = sessionStorage.getItem("unsplashImages");
       if (cachedImages) {
         setImages(JSON.parse(cachedImages));
       } else {
-        setUnsplashImages();
+        await setUnsplashImages();
         setImages(JSON.parse(sessionStorage.getItem("unsplashImages") || "[]"));
       }
     };
@@ -83,7 +83,7 @@ export default function InfoCardList({
     if (typeof shop.id === "number" && images[shop.id]) {
       return images[shop.id];
     }
-    return "https://images.unsplash.com/photo-1697724779999-c9e1697bea17";
+    return undefined;
   };
 
   if (isLoading) {
@@ -98,14 +98,29 @@ export default function InfoCardList({
     <section className="flex flex-col items-start p-14 w-full max-w-7xl">
       <h1 className="text-4xl font-bold mb-8">{headingText}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        {coffeeShops.map((shop) => (
-          <Card
-            key={shop.id}
-            href={`/coffee-stores/${shop.id}/?index=${shop.index}`}
-            name={shop.name}
-            imageUrl={getImageUrl(shop)}
-          />
-        ))}
+        <Suspense
+          fallback={Array.from({ length: limit }).map((_, idx) => (
+            <div
+              key={idx}
+              className="flex justify-center items-center h-64 bg-gray-100 animate-pulse rounded-lg"
+            >
+              <span className="text-lg text-gray-400">Loading image...</span>
+            </div>
+          ))}
+        >
+          {coffeeShops.map((shop) => {
+            const imageUrl =
+              images.length === 0 ? undefined : getImageUrl(shop);
+            return (
+              <Card
+                key={shop.id}
+                href={`/coffee-stores/${shop.id}/?index=${shop.index}`}
+                name={shop.name}
+                imageUrl={imageUrl}
+              />
+            );
+          })}
+        </Suspense>
       </div>
     </section>
   );
