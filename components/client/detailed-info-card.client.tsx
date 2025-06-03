@@ -7,17 +7,19 @@ interface CoffeeCardProps {
   name: string;
   address: string;
   rating: number;
-  imageUrl: string;
+  imageUrlTxt: string;
   id: string;
+  localImageUrl: boolean;
 }
 
 const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   name,
   address,
   rating,
-  imageUrl: defaultImageUrl,
+  imageUrlTxt,
+  localImageUrl,  
 }) => {
-  const [imageUrl, setImageUrl] = useState(defaultImageUrl);
+  const [imageUrl, setImageUrl] = useState(imageUrlTxt);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -26,9 +28,14 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
     const unsplashImages = JSON.parse(
       sessionStorage.getItem("unsplashImages") || "[]"
     );
-    const imgUrl = unsplashImages[index || 0] || null;
-    if (imgUrl) {
-      setImageUrl(imgUrl);
+    const imgUrlStr = unsplashImages[index || 0] || null;
+    if (localImageUrl && imgUrlStr) {
+      console.log("using local image url");
+      setImageUrl(imgUrlStr);
+    } else if (imageUrlTxt) {
+      setImageUrl(imageUrlTxt); 
+    } else if (imgUrlStr) {
+      setImageUrl(imgUrlStr);
     }
   }, [searchParams]);
 

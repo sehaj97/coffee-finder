@@ -26,6 +26,7 @@ export default function CoffeeStoresHomePage() {
     setShowLocal(true);
     clearSessionLocation();
     trackLocation();
+    console.log("showLocal", location);
   };
 
   useEffect(() => {
