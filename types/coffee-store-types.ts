@@ -1,3 +1,5 @@
+import { FieldSet } from "airtable";
+
 export type CoffeeShopType = {
   id: string;
   index?: number;
