@@ -1,18 +1,34 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import DetailedInfoCard from "@/components/client/detailed-info-card.client";
-import { fetchCoffeeStore, fetchCoffeeStores } from "@/libs/coffee-stores-api";
 import CoffeeHomeLink from "@/components/client/coffee-link.client";
-import { createCoffeeStore, fetchAirtableCoffeeStores } from "@/libs/airtable-api";
-
-const DEFAULT_IMG_URL =
-  "https://images.unsplash.com/photo-1697724779999-c9e1697bea17?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+import { fetchAirtableCoffeeStores } from "@/libs/airtable-api";
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
 
 export async function generateStaticParams() {
-  const coffeeStores = await fetchCoffeeStores(-69.990593, 44.740121);
-  return coffeeStores.map((store: { id: string }) => ({
-    id: [store.id],
-  }));
+  // when running build, this function is called to generate the static params so make sure in another terminal you run the command "npm run dev" to start the localhost:3000 server to see the changes.
+  try {
+    const response = await fetch(
+      `${baseUrl}/api/getCoffeeStores/getByLocation?longitude=-69.990593&latitude=44.740121&limit=10`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const coffeeStores = await response.json();
+    return coffeeStores.map((store: { id: string, name: string, address: string, imgUrl: string, rating: number, votes: number }) => ({
+      id: [store.id],
+      name: store.name,
+      address: store.address,
+      imgUrl: store.imgUrl,
+      rating: store.rating,
+      votes: store.votes,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 type PageProps = {
@@ -34,10 +50,11 @@ export default async function CoffeeStorePage({ params }: PageProps) {
     if (airtableStores?.length > 0) {
       store = airtableStores[0];
     } else {
-      const mapboxStores = await fetchCoffeeStore(storeId);
+      const response = await fetch(`${baseUrl}/api/getCoffeeStore?id=${storeId}`);
+      const mapboxStores = await response.json();
       if (mapboxStores?.length > 0) {
         store = mapboxStores[0];
-        await createCoffeeStore(store, storeId);
+        console.log("store", store?.imgUrl);
         localImageUrl = true;
       }
     }
@@ -64,11 +81,13 @@ export default async function CoffeeStorePage({ params }: PageProps) {
         <Suspense fallback={<div>Loading store details...</div>}>
           <DetailedInfoCard
             name={store?.name || "Unknown Name"}
-            address={store?.address || "Unknown Address"} 
+            address={store?.address || "Unknown Address"}
             rating={store?.rating || 0}
-            imageUrlTxt={store?.imgUrl || DEFAULT_IMG_URL}
+            imageUrlTxt={store?.imgUrl}
             localImageUrl={localImageUrl}
             id={storeId}
+            voteCount={store?.voting || 0}
+            recordId={store?.recordId || ""}
           />
         </Suspense>
       </div>

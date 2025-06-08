@@ -33,7 +33,7 @@ export async function fetchCoffeeStores(
   try {
     // setUnsplashImages();
     const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=${limit}&proximity=${longitude}%2C${latitude}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
+      `https://api.mapbox.com/search/searchbox/v1/forward?q=coffee&limit=${limit}&proximity=${longitude}%2C${latitude}&access_token=${process.env.MAPBOX_API_KEY}`
     );
     const data = await response.json();
     const formattedData = data.features.map((feature: any, index: number) =>
@@ -53,7 +53,7 @@ export async function fetchCoffeeStore(id: string) {
   // fetch mapbox api
   try {
     const response = await fetch(
-      `https://api.mapbox.com/search/searchbox/v1/retrieve/${id}?session_token=06e1f036-ff3a-4196-8f49-c5f400b3d168&access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_KEY}`
+      `https://api.mapbox.com/search/searchbox/v1/retrieve/${id}?session_token=06e1f036-ff3a-4196-8f49-c5f400b3d168&access_token=${process.env.MAPBOX_API_KEY}`
     );
     const data = await response.json();
     const formattedData = data.features.map((feature: any, index: number) =>

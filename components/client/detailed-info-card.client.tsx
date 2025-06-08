@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import UpvoteButton from "./upVote.client";
+import { createCoffeeStore, updateCoffeeStoreVotes} from "@/libs/airtable-api";
 
 interface CoffeeCardProps {
   name: string;
@@ -10,6 +12,8 @@ interface CoffeeCardProps {
   imageUrlTxt: string;
   id: string;
   localImageUrl: boolean;
+  voteCount: number;
+  recordId: string;
 }
 
 const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
@@ -17,28 +21,45 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
   address,
   rating,
   imageUrlTxt,
-  localImageUrl,  
+  localImageUrl,
+  id,
+  voteCount,
+  recordId,
 }) => {
   const [imageUrl, setImageUrl] = useState(imageUrlTxt);
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    // Only run on client side
+  useEffect( () => {
     const index = searchParams.get("index");
     const unsplashImages = JSON.parse(
       sessionStorage.getItem("unsplashImages") || "[]"
     );
     const imgUrlStr = unsplashImages[index || 0] || null;
+    
+    let finalImageUrl = imageUrl; // default to current state
+    
     if (localImageUrl && imgUrlStr) {
       console.log("using local image url");
       setImageUrl(imgUrlStr);
+      finalImageUrl = imgUrlStr;
     } else if (imageUrlTxt) {
-      setImageUrl(imageUrlTxt); 
+      setImageUrl(imageUrlTxt);
+      finalImageUrl = imageUrlTxt;
     } else if (imgUrlStr) {
       setImageUrl(imgUrlStr);
+      finalImageUrl = imgUrlStr;
     }
-  }, [searchParams]);
-
+    
+    createCoffeeStore(
+      name,
+      address,
+      rating,
+      finalImageUrl,
+      voteCount,
+      id,
+      Number(index || 0)
+    );
+  }, [name, address, rating, voteCount, id, searchParams]);
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -71,6 +92,15 @@ const DetailedInfoCard: React.FC<CoffeeCardProps> = ({
         <h2 className="text-xl md:text-2xl font-bold mb-2">{name}</h2>
         <p className="text-gray-600 text-sm md:text-base mb-2">{address}</p>
         <div className="text-yellow-400 text-lg">{renderStars(rating)}</div>
+        <UpvoteButton 
+          storeId={id}
+          initialVoteCount={voteCount} 
+          onVote={(newCount: number) => {
+            // Handle vote update
+            updateCoffeeStoreVotes(newCount, recordId, id);
+            console.log('New vote count:', newCount);
+          }}
+        />
       </div>
     </div>
   );
